@@ -1,8 +1,13 @@
-from flask import jsonify, flash, request, abort
+from flask import jsonify, flash, request, abort, render_template
 from app import db
 from app.models import Product, Offer
 from app import app
 import json
+
+
+@app.route('/')
+def index():
+    return render_template("index.html")
 
 
 @app.route('/product/<string:productcode>', methods=['POST'])

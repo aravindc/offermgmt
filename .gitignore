@@ -2,3 +2,5 @@ offer.db
 __pycache__
 .idea
 venv
+app/static/node_modules
+app/static/dist
