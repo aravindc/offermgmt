@@ -23,15 +23,6 @@ def create_offer(offercode):
     return jsonify({'message': 'Offer code ' + offercode + ' Added'})
 
 
-@app.route('/products')
-def show_all_products():
-    all_products = []
-    products = Product.query.all()
-    for product in products:
-        all_products.append(product)
-    return jsonify(all_products)
-
-
 @app.route('/offerasso', methods=['POST'])
 def offer_to_product():
     if not request.json:
@@ -40,13 +31,14 @@ def offer_to_product():
     for jsonObj in jsonObjs:
         offer = Offer.query.filter(Offer.offer_code ==
                                    jsonObj['offercode']).first()
+        print(offer)
         if offer is None:
             abort(400)
         for products in jsonObj['productcode']:
             product = Product.query.filter(Product.product_code ==
                                            products).first()
-            product.offers.append(offer)
-            db.session.add(product)
+            offer.products.append(product)
+            db.session.add(offer)
             db.session.commit()
     return jsonify({'message': 'Offer to Product associated'})
 
@@ -56,10 +48,25 @@ def show_all_offers():
     all_offer_product = []
     offers = Offer.query.all()
     for offer in offers:
-        offer_product = {}
-        offer_product['offer_code'] = offer.offer_code
-        offer_product['product_code'] = []
+        offer_product = row2dict(offer)
+        offer_product['product'] = []
         for product in offer.products:
-            offer_product['product_code'].append(product.product_code)
+            offer_product['product'].append(row2dict(product))
         all_offer_product.append(offer_product)
     return jsonify(all_offer_product)
+
+
+@app.route('/products')
+def show_all_products():
+    all_products = []
+    products = Product.query.all()
+    for product in products:
+        all_products.append(row2dict(product))
+    return jsonify(all_products)
+
+
+def row2dict(row):
+    d = {}
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+    return d

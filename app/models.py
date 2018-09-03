@@ -1,4 +1,5 @@
 from app import db
+from datetime import datetime
 
 offer_link = db.Table('offer_link',
                       db.Column('product_id', db.Integer,
@@ -15,10 +16,26 @@ class Product(db.Model):
     product_image_url_s = db.Column(db.String(255))
     product_image_url_m = db.Column(db.String(255))
     product_image_url_l = db.Column(db.String(255))
-    product_url = db.Column(db.String(20))
+    product_url = db.Column(db.String(255))
 
     def __repr__(self):
         return '<Product {}>'.format(self.product_code)
+
+    @classmethod
+    def seed(cls, fake):
+        product = Product(
+            product_code=fake.prodcode_gen(),
+            product_desc=fake.proddesc_gen(),
+            product_image_url_s=fake.image_url(width=90, height=90),
+            product_image_url_m=fake.image_url(width=150, height=150),
+            product_image_url_l=fake.image_url(width=250, height=250),
+            product_url=fake.url()
+        )
+        product.save()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 class Offer(db.Model):
@@ -32,3 +49,17 @@ class Offer(db.Model):
 
     def __repr__(self):
         return '<Offer {}>'.format(self.offer_code)
+
+    @classmethod
+    def seed(cls, fake):
+        offer = Offer(
+            offer_code=fake.offercode_gen(),
+            offer_desc=fake.offerdesc_gen(),
+            offer_start=datetime.strptime(fake.date(), '%Y-%m-%d'),
+            offer_end=datetime.strptime(fake.date(), '%Y-%m-%d')
+        )
+        offer.save()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
