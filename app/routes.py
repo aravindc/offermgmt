@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, flash, render_template, request, abort
+from flask import jsonify, flash, request, abort
 from app import db
 from app.models import Product, Offer
 from app import app
@@ -38,11 +38,13 @@ def offer_to_product():
         abort(400)
     jsonObjs = json.loads(request.data)
     for jsonObj in jsonObjs:
-        offer = Offer.query.filter(Offer.offer_code == jsonObj['offercode']).first()
+        offer = Offer.query.filter(Offer.offer_code ==
+                                   jsonObj['offercode']).first()
         if offer is None:
             abort(400)
         for products in jsonObj['productcode']:
-            product = Product.query.filter(Product.product_code == products).first()
+            product = Product.query.filter(Product.product_code ==
+                                           products).first()
             product.offers.append(offer)
             db.session.add(product)
             db.session.commit()
