@@ -16,7 +16,12 @@ class Product(db.Model):
     product_image_url_s = db.Column(db.String(255))
     product_image_url_m = db.Column(db.String(255))
     product_image_url_l = db.Column(db.String(255))
-    product_url = db.Column(db.String(255))
+    product_url = db.Column(db.String(50))
+    product_lvl1 = db.Column(db.String(50))
+    product_lvl2 = db.Column(db.String(50))
+    product_lvl3 = db.Column(db.String(50))
+    product_lvl4 = db.Column(db.String(50))
+    product_lvl5 = db.Column(db.String(50))
 
     def __repr__(self):
         return '<Product {}>'.format(self.product_code)
@@ -29,7 +34,12 @@ class Product(db.Model):
             product_image_url_s=fake.image_url(width=90, height=90),
             product_image_url_m=fake.image_url(width=150, height=150),
             product_image_url_l=fake.image_url(width=250, height=250),
-            product_url=fake.url()
+            product_url=fake.url(),
+            product_lvl1=fake.lvl1_gen(),
+            product_lvl2=fake.lvl2_gen(),
+            product_lvl3=fake.lvl3_gen(),
+            product_lvl4=fake.lvl4_gen(),
+            product_lvl5=fake.lvl5_gen()
         )
         product.save()
 

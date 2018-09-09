@@ -26,10 +26,12 @@ if orows is None or prows is None:
     db.create_all()
     db.session.commit()
 
+
 # Seed tables with test data where required
 if orows == 0 or prows == 0:
     fake = Faker()
     fake.add_provider(MyProvider)
-    for _ in range(10):
+    for _ in range(235):
         models.Product.seed(fake)
+    for _ in range(123):
         models.Offer.seed(fake)

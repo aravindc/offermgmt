@@ -1,8 +1,9 @@
-from flask import jsonify, flash, request, abort, render_template
+from flask import jsonify, request, abort, render_template
 from app import db
 from app.models import Product, Offer
 from app import app
 import json
+from datetime import datetime
 
 
 @app.route('/')
@@ -10,22 +11,53 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/product/<string:productcode>', methods=['POST'])
-def create_product(productcode):
-    product = Product(product_code=productcode)
-    db.session.add(product)
+@app.route('/product', methods=['POST'])
+def create_product():
+    if not request.json:
+        abort(400)
+    jsonObjs = json.loads(request.data)
+    for jsonObj in jsonObjs:
+        db.session.add(Product(
+            product_code=jsonObj['product_code'],
+            product_desc=jsonObj['product_desc'],
+            product_image_url_s=jsonObj['product_image_url_s'],
+            product_image_url_m=jsonObj['product_image_url_m'],
+            product_image_url_l=jsonObj['product_image_url_l'],
+            product_url=jsonObj['product_url'],
+            product_lvl1=jsonObj['product_lvl1'],
+            product_lvl2=jsonObj['product_lvl2'],
+            product_lvl3=jsonObj['product_lvl3'],
+            product_lvl4=jsonObj['product_lvl4'],
+            product_lvl5=jsonObj['product_lvl5'])
+        )
     db.session.commit()
-    flash('Record Added')
-    return jsonify({'message': 'Product code ' + productcode + ' Added'})
+    return jsonify({'message': 'Product Added'})
 
 
-@app.route('/offer/<string:offercode>', methods=['POST'])
-def create_offer(offercode):
-    offer = Offer(offer_code=offercode)
-    db.session.add(offer)
+@app.route('/offer', methods=['POST'])
+def create_offer():
+    if not request.json:
+        abort(400)
+    jsonObjs = json.loads(request.data)
+    for jsonObj in jsonObjs:
+        db.session.add(Offer(
+            offer_code=jsonObj['offer_code'],
+            offer_desc=jsonObj['offer_desc'],
+            offer_start=datetime.strptime(jsonObj['offer_start'], '%Y-%m-%d'),
+            offer_end=datetime.strptime(jsonObj['offer_end'], '%Y-%m-%d')
+        ))
     db.session.commit()
-    flash('Record Added')
-    return jsonify({'message': 'Offer code ' + offercode + ' Added'})
+    return jsonify({'message': 'Offer Added'})
+
+
+@app.route('/hietree', methods=['GET'])
+def get_hie_data():
+    level_no = 0
+    output = []
+    if level_no == 0:
+        for test in db.session.query(Product.product_lvl1).distinct():
+            output.append(test.product_lvl1)
+    return jsonify(output)
 
 
 @app.route('/offerasso', methods=['POST'])

@@ -608,6 +608,15 @@ offerdesc = [
     "Save £1.50 Was £4.00 Now £2.50"
 ]
 
+lvl1 = ['Fresh Food', 'Bakery', 'Food Cupboard', 'Frozen Food',
+        'Drinks', 'Baby']
+lvl2 = ['Fresh Fruit', 'Fresh Veg', 'Cheese', 'Milk', 'Meat - Poultry',
+        'Bread & Rolls']
+lvl3 = ['White Bread', 'Brown Bread', 'Seeded Bread',
+        'Bagels', 'Batons']
+lvl4 = ['Tea', 'Coffee', 'Milkshake', 'Water', 'Juice']
+lvl5 = ['Pies', 'Pizza', 'Ready Meals', 'Pudding', 'Garlic Bread']
+
 
 # create new provider class
 class MyProvider(BaseProvider):
@@ -624,3 +633,18 @@ class MyProvider(BaseProvider):
 
     def offerdesc_gen(self):
         return self.fake.word(ext_word_list=offerdesc)
+
+    def lvl1_gen(self):
+        return self.fake.word(ext_word_list=lvl1)
+
+    def lvl2_gen(self):
+        return self.fake.word(ext_word_list=lvl2)
+
+    def lvl3_gen(self):
+        return self.fake.word(ext_word_list=lvl3)
+
+    def lvl4_gen(self):
+        return self.fake.word(ext_word_list=lvl4)
+
+    def lvl5_gen(self):
+        return self.fake.word(ext_word_list=lvl5)
