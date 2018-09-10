@@ -346,7 +346,8 @@ offerdesc = [
     "Save 40p Was £1.40 Now £1.00",
     "Save £1.00 Was £7.00 Now £6.00",
     "Save £2.50 Was £13.50 Now £11.00",
-    "Salad Deal - Buy 1 Salad Bowl + 1 Addition Pot + 1 Dressing Pot for £2.50",
+    "Salad Deal - Buy 1 Salad Bowl + 1 Addition \
+    Pot + 1 Dressing Pot for £2.50",
     "Save 25p Was 75p Now 50p",
     "Save £1.50 Was £4.99 Now £3.49",
     "Any 3 for £1.00",
@@ -530,7 +531,8 @@ offerdesc = [
     "Half Price Was £22.00 Now £11.00",
     "Any 5 for £1.00",
     "Save £5.01 Was £18.00 Now £12.99",
-    "£5 Stir Fry Meal Deal - Buy 1 Vegetable + 1 Noodle + 1 Sauce + 1 Protein For £5",
+    "£5 Stir Fry Meal Deal - Buy 1 Vegetable + 1 Noodle +\
+     1 Sauce + 1 Protein For £5",
     "Save 24p Was £1.24 Now £1.00",
     "Save £2.99 Was £6.99 Now £4.00",
     "Save 50p Was £1.75 Now £1.25",
@@ -608,6 +610,15 @@ offerdesc = [
     "Save £1.50 Was £4.00 Now £2.50"
 ]
 
+lvl1 = ['Fresh Food', 'Bakery', 'Food Cupboard', 'Frozen Food',
+        'Drinks', 'Baby']
+lvl2 = ['Fresh Fruit', 'Fresh Veg', 'Cheese', 'Milk', 'Meat - Poultry',
+        'Bread & Rolls']
+lvl3 = ['White Bread', 'Brown Bread', 'Seeded Bread',
+        'Bagels', 'Batons']
+lvl4 = ['Tea', 'Coffee', 'Milkshake', 'Water', 'Juice']
+lvl5 = ['Pies', 'Pizza', 'Ready Meals', 'Pudding', 'Garlic Bread']
+
 
 # create new provider class
 class MyProvider(BaseProvider):
@@ -622,5 +633,23 @@ class MyProvider(BaseProvider):
     def proddesc_gen(self):
         return self.fake.word(ext_word_list=proddesc)
 
+    def offername_gen(self):
+        return self.fake.word(ext_word_list=offerdesc)
+
     def offerdesc_gen(self):
         return self.fake.word(ext_word_list=offerdesc)
+
+    def lvl1_gen(self):
+        return self.fake.word(ext_word_list=lvl1)
+
+    def lvl2_gen(self):
+        return self.fake.word(ext_word_list=lvl2)
+
+    def lvl3_gen(self):
+        return self.fake.word(ext_word_list=lvl3)
+
+    def lvl4_gen(self):
+        return self.fake.word(ext_word_list=lvl4)
+
+    def lvl5_gen(self):
+        return self.fake.word(ext_word_list=lvl5)
