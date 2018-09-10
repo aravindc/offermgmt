@@ -1,5 +1,7 @@
 from flask import jsonify, request, abort, render_template
+from faker import Faker
 from app import db
+from app.providers import MyProvider
 from app.models import Product, Offer
 from app import app
 import json
@@ -11,8 +13,30 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/populatedb', methods=['POST'])
+def populate_db():
+    orows = db.session.query(Offer).count()
+    prows = db.session.query(Product).count()
+    fake = Faker()
+    fake.add_provider(MyProvider)
+    if prows == 0:
+        for _ in range(250):
+            Product.seed(fake)
+    if orows == 0:
+        for _ in range(150):
+            Offer.seed(fake)
+    orows = db.session.query(Offer).count()
+    prows = db.session.query(Product).count()
+    message = {
+        "message":
+        "Product table has {0} records and Offer table has {1} records"
+        .format(prows, orows)}
+    return jsonify(message)
+
+
 @app.route('/product', methods=['POST'])
 def create_product():
+    message = {"message": ""}
     if not request.json:
         abort(400)
     jsonObjs = json.loads(request.data)
@@ -30,12 +54,18 @@ def create_product():
             product_lvl4=jsonObj['product_lvl4'],
             product_lvl5=jsonObj['product_lvl5'])
         )
-    db.session.commit()
-    return jsonify({'message': 'Product Added'})
+    try:
+        db.session.commit()
+        message = {"message": "Records added"}
+    except Exception as ex:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = {"message": template.format(type(ex).__name__, ex.args)}
+    return jsonify(message)
 
 
 @app.route('/offer', methods=['POST'])
 def create_offer():
+    message = {"message": ""}
     if not request.json:
         abort(400)
     jsonObjs = json.loads(request.data)
@@ -46,8 +76,13 @@ def create_offer():
             offer_start=datetime.strptime(jsonObj['offer_start'], '%Y-%m-%d'),
             offer_end=datetime.strptime(jsonObj['offer_end'], '%Y-%m-%d')
         ))
-    db.session.commit()
-    return jsonify({'message': 'Offer Added'})
+    try:
+        db.session.commit()
+        message = {"message": "Records added"}
+    except Exception as ex:
+        template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+        message = {"message": template.format(type(ex).__name__, ex.args)}
+    return jsonify(message)
 
 
 @app.route('/hietree', methods=['GET'])

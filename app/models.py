@@ -10,6 +10,8 @@ offer_link = db.Table('offer_link',
 
 
 class Product(db.Model):
+    __tablename__ = 'product'
+
     product_id = db.Column(db.Integer, primary_key=True)
     product_code = db.Column(db.String(20), unique=True)
     product_desc = db.Column(db.String(255), nullable=False)
@@ -49,11 +51,13 @@ class Product(db.Model):
 
 
 class Offer(db.Model):
+    __tablename__ = 'offer'
     offer_id = db.Column(db.Integer, primary_key=True)
-    offer_code = db.Column(db.String(20), unique=True)
-    offer_desc = db.Column(db.String(255), nullable=False)
-    offer_start = db.Column(db.DateTime)
-    offer_end = db.Column(db.DateTime)
+    offer_code = db.Column(db.String(20), unique=True, nullable=False)
+    offer_name = db.Column(db.String(150), nullable=False)
+    offer_desc = db.Column(db.String(255))
+    offer_start = db.Column(db.DateTime, nullable=False)
+    offer_end = db.Column(db.DateTime, nullable=False)
     products = db.relationship('Product', secondary='offer_link',
                                backref='product', lazy=True)
 
@@ -64,6 +68,7 @@ class Offer(db.Model):
     def seed(cls, fake):
         offer = Offer(
             offer_code=fake.offercode_gen(),
+            offer_name=fake.offername_gen(),
             offer_desc=fake.offerdesc_gen(),
             offer_start=datetime.strptime(fake.date(), '%Y-%m-%d'),
             offer_end=datetime.strptime(fake.date(), '%Y-%m-%d')
