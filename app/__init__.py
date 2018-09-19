@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__, static_folder='../static/dist',
-            template_folder='../static')
+            template_folder='../static/src')
 CORS(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)

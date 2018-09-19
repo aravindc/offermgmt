@@ -15,16 +15,23 @@ def index():
 
 @app.route('/populatedb', methods=['POST'])
 def populate_db():
-    orows = db.session.query(Offer).count()
-    prows = db.session.query(Product).count()
+    if not request.json:
+        abort(400)
+    jsonObj = json.loads(request.data)
     fake = Faker()
     fake.add_provider(MyProvider)
-    if prows == 0:
-        for _ in range(250):
-            Product.seed(fake)
-    if orows == 0:
-        for _ in range(150):
-            Offer.seed(fake)
+    if jsonObj['append'] == "False":
+        try:
+            db.session.query(Product).delete()
+            db.session.query(Offer).delete()
+            db.session.commit()
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = {"message": template.format(type(ex).__name__, ex.args)}
+    for i in range(jsonObj['ProdCount']):
+        Product.seed(fake, i+1)
+    for j in range(jsonObj['OfferCount']):
+        Offer.seed(fake, j+1)
     orows = db.session.query(Offer).count()
     prows = db.session.query(Product).count()
     message = {
@@ -142,3 +149,9 @@ def row2dict(row):
     for column in row.__table__.columns:
         d[column.name] = str(getattr(row, column.name))
     return d
+
+
+def prodhierarchy():
+    all_products = []
+    products = Product.query(Product.product_lvl1, Product.product_lvl2,
+                             Product.product_code).all()

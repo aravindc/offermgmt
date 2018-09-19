@@ -29,9 +29,9 @@ class Product(db.Model):
         return '<Product {}>'.format(self.product_code)
 
     @classmethod
-    def seed(cls, fake):
+    def seed(cls, fake, i):
         product = Product(
-            product_code=fake.prodcode_gen(),
+            product_code='PROD'+str(i).rjust(6, '0'),
             product_desc=fake.proddesc_gen(),
             product_image_url_s=fake.image_url(width=90, height=90),
             product_image_url_m=fake.image_url(width=150, height=150),
@@ -65,9 +65,9 @@ class Offer(db.Model):
         return '<Offer {}>'.format(self.offer_code)
 
     @classmethod
-    def seed(cls, fake):
+    def seed(cls, fake, i):
         offer = Offer(
-            offer_code=fake.offercode_gen(),
+            offer_code='OFFER'+str(i).rjust(6, '0'),
             offer_name=fake.offername_gen(),
             offer_desc=fake.offerdesc_gen(),
             offer_start=datetime.strptime(fake.date(), '%Y-%m-%d'),
@@ -76,5 +76,11 @@ class Offer(db.Model):
         offer.save()
 
     def save(self):
-        db.session.add(self)
-        db.session.commit()
+        try:
+            db.session.add(self)
+            db.session.commit()
+            message = {"message": "Records added"}
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = {"message": template.format(type(ex).__name__, ex.args)}
+            print(message)
