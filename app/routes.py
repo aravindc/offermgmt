@@ -92,16 +92,6 @@ def create_offer():
     return jsonify(message)
 
 
-@app.route('/hietree', methods=['GET'])
-def get_hie_data():
-    level_no = 0
-    output = []
-    if level_no == 0:
-        for test in db.session.query(Product.product_lvl1).distinct():
-            output.append(test.product_lvl1)
-    return jsonify(output)
-
-
 @app.route('/offerasso', methods=['POST'])
 def offer_to_product():
     if not request.json:
@@ -144,14 +134,70 @@ def show_all_products():
     return jsonify(all_products)
 
 
+@app.route('/hietree', methods=['GET'])
+def get_hie_data():
+    prod_tree = []
+    lvl1s = db.session.query(Product.product_lvl1).order_by(
+                             Product.product_lvl1).distinct().all()
+    for lvl1 in lvl1s:
+        lvl1unit = {lvl1[0]: []}
+        lvl2s = db.session.query(Product.product_lvl2).filter(
+                                 Product.product_lvl1 == lvl1[0]
+                                 ).order_by(
+                                 Product.product_lvl2
+                                 ).distinct().all()
+        for lvl2 in lvl2s:
+            lvl2unit = {lvl2[0]: []}
+            lvl3s = db.session.query(Product.product_lvl3).filter(
+                                     Product.product_lvl2 == lvl2[0],
+                                     Product.product_lvl1 == lvl1[0]
+                                     ).order_by(
+                                     Product.product_lvl3
+                                     ).distinct().all()
+            for lvl3 in lvl3s:
+                lvl3unit = {lvl3[0]: []}
+                lvl4s = db.session.query(Product.product_lvl4).filter(
+                                         Product.product_lvl3 == lvl3[0],
+                                         Product.product_lvl2 == lvl2[0],
+                                         Product.product_lvl1 == lvl1[0]
+                                         ).order_by(
+                                         Product.product_lvl4
+                                         ).distinct().all()
+                for lvl4 in lvl4s:
+                    lvl4unit = {lvl4[0]: []}
+                    lvl5s = db.session.query(Product.product_lvl5).filter(
+                                             Product.product_lvl4 == lvl4[0],
+                                             Product.product_lvl3 == lvl3[0],
+                                             Product.product_lvl2 == lvl2[0],
+                                             Product.product_lvl1 == lvl1[0]
+                                             ).order_by(
+                                             Product.product_lvl5
+                                             ).distinct().all()
+                    for lvl5 in lvl5s:
+                        lvl5unit = {lvl5[0]: []}
+                        prodcodes = db.session.query(
+                                     Product.product_code).filter(
+                                     Product.product_lvl5 == lvl5[0],
+                                     Product.product_lvl4 == lvl4[0],
+                                     Product.product_lvl3 == lvl3[0],
+                                     Product.product_lvl2 == lvl2[0],
+                                     Product.product_lvl1 == lvl1[0]
+                                     ).order_by(
+                                     Product.product_code
+                                     ).distinct().all()
+                        if prodcodes is not None:
+                            for prodcode in prodcodes:
+                                lvl5unit[lvl5[0]].append(prodcode[0])
+                        lvl4unit[lvl4[0]].append(lvl5unit)
+                    lvl3unit[lvl3[0]].append(lvl4unit)
+                lvl2unit[lvl2[0]].append(lvl3unit)
+            lvl1unit[lvl1[0]].append(lvl2unit)
+        prod_tree.append(lvl1unit)
+    return jsonify(prod_tree)
+
+
 def row2dict(row):
     d = {}
     for column in row.__table__.columns:
         d[column.name] = str(getattr(row, column.name))
     return d
-
-
-def prodhierarchy():
-    all_products = []
-    products = Product.query(Product.product_lvl1, Product.product_lvl2,
-                             Product.product_code).all()
