@@ -1,3 +1,12 @@
-<h1>
-  <ng-content></ng-content>
-</h1>
+<mat-toolbar color="primary">
+    <img src="../../../assets/img/shop-bag.svg" width="50" height="50" />
+    <span>{{ header_title }}</span>
+  <button mat-icon-button [mat-menu-trigger-for]="menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-menu x-position="before" #menu="matMenu">
+  <button mat-menu-item>Option 1</button>
+  <button mat-menu-item>Option 2</button>
+</mat-menu>
+<ng-content></ng-content>

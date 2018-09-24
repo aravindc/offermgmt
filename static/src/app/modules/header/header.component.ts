@@ -7,11 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent implements OnInit {
 
+  header_title = 'Offer Management';
+
   constructor() { }
 
   ngOnInit() {
   }
-
-  header_title = 'Header';
 
 }

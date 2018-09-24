@@ -4,4 +4,5 @@ __pycache__
 venv
 static/node_modules
 static/dist
+.vscode
 activate.bat.lnk

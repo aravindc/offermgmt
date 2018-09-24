@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from './header.component';
+import { FooterComponent } from './footer.component';
 import { MaterialModule } from '../material/material.module';
 
 @NgModule({
@@ -9,7 +9,7 @@ import { MaterialModule } from '../material/material.module';
     CommonModule,
     MaterialModule
   ],
-  declarations: [HeaderComponent],
-  exports: [HeaderComponent]
+  declarations: [FooterComponent],
+  exports: [FooterComponent]
 })
-export class HeaderModule { }
+export class FooterModule { }

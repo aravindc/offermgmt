@@ -1,3 +1,24 @@
 <!--The content below is only a placeholder and can be replaced.-->
+<!--
 <div style="text-align:center">
-<app-header>Menu Bar here</app-header>
+<app-header>Menu Bar here</app-header>-->
+<div>
+    <app-header></app-header>
+    <!--
+  <mat-card>
+    <button mat-button>All</button>
+    <button mat-raised-button>Of</button>
+    <button mat-raised-button color="primary">The</button>
+    <button mat-raised-button color="accent">Buttons</button>
+  </mat-card>
+-->
+
+  <mat-card>
+    <span>{{ title }}</span>
+    <nav>
+      <a [routerLink]="['/prodhie']" routerLinkActive="router-link-active" >Product Hierarchy</a>
+    </nav>
+  </mat-card>
+  <router-outlet></router-outlet>
+  <app-footer></app-footer>
+</div>

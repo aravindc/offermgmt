@@ -134,7 +134,7 @@ def show_all_products():
     return jsonify(all_products)
 
 
-@app.route('/hietree', methods=['GET'])
+@app.route('/hiefulltree', methods=['GET'])
 def get_hie_data():
     prod_tree = []
     lvl1s = db.session.query(Product.product_lvl1).order_by(
