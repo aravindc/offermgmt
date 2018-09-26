@@ -196,6 +196,56 @@ def get_hie_data():
     return jsonify(prod_tree)
 
 
+@app.route('/getprodlevel/<int:level>', methods=['POST'])
+def getProdLevel(level):
+    prodLevel = []
+    if not request.json:
+        abort(400)
+    jsonObjs = json.loads(request.data)
+    if level == 1:
+        lvls = db.session.query(Product.product_lvl1).order_by(
+            Product.product_lvl1).distinct().all()
+    elif level == 2:
+        lvls = db.session.query(Product.product_lvl2).filter(
+            Product.product_lvl1 == jsonObjs["level1"]).order_by(Product.product_lvl2
+            ).distinct().all()
+    elif level == 3:
+        lvls = db.session.query(Product.product_lvl3).filter(
+            Product.product_lvl2 == jsonObjs["level2"], 
+            Product.product_lvl1 == jsonObjs["level1"]
+            ).order_by(Product.product_lvl3).distinct().all()
+    elif level == 4:
+        lvls = db.session.query(Product.product_lvl4).filter(
+            Product.product_lvl3 == jsonObjs["level3"],
+            Product.product_lvl2 == jsonObjs["level2"],
+            Product.product_lvl1 == jsonObjs["level1"]
+        ).order_by(
+            Product.product_lvl4
+        ).distinct().all()
+    elif level == 5:
+        lvls = db.session.query(Product.product_lvl5).filter(
+            Product.product_lvl4 == jsonObjs["level4"],
+            Product.product_lvl3 == jsonObjs["level3"],
+            Product.product_lvl2 == jsonObjs["level2"],
+            Product.product_lvl1 == jsonObjs["level1"]
+        ).order_by(
+            Product.product_lvl5
+        ).distinct().all()
+    elif level == 6:
+        lvls = db.session.query(Product.product_code).filter(
+            Product.product_lvl5 == jsonObjs["level5"],
+            Product.product_lvl4 == jsonObjs["level4"],
+            Product.product_lvl3 == jsonObjs["level3"],
+            Product.product_lvl2 == jsonObjs["level2"],
+            Product.product_lvl1 == jsonObjs["level1"]
+        ).order_by(
+            Product.product_code
+        ).distinct().all()
+    for lvl in lvls:
+        prodLevel.append(lvl[0])
+    return jsonify(prodLevel)
+
+
 def row2dict(row):
     d = {}
     for column in row.__table__.columns:
